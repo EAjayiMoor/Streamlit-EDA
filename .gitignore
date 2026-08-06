@@ -14,6 +14,11 @@ __pycache__/
 # Temporary Office lock files
 ~$*
 
+# Local source data and workbooks
+data/raw/
+*.xlsx
+*.xls
+
 # Local virtual environments
 .venv/
 venv/

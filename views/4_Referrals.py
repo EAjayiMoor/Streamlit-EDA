@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.express as px
+import pandas as pd
 
 from src.data.referral_loader import (
     load_referral_data,
@@ -22,12 +23,6 @@ from src.transforms.referral_transform import (
 )
 
 
-st.set_page_config(
-    page_title="Referral & Demand Intelligence",
-    page_icon="📨",
-    layout="wide",
-)
-
 st.title("📨 Referral & Demand Intelligence")
 
 st.caption(
@@ -43,7 +38,13 @@ DEFAULT_REFERRAL_PATH = "data/raw/Refferals"
 # -------------------------------------------------------------------
 
 try:
-    referral_df = load_referral_data(DEFAULT_REFERRAL_PATH)
+    uploaded_frames = st.session_state.get("eda_frames", [])
+    uploaded_workflow = st.session_state.get("eda_workflow")
+    if uploaded_workflow == "referrals" and uploaded_frames:
+        referral_df = pd.concat(uploaded_frames, ignore_index=True)
+        st.info("Using the validated referral batch from the upload workspace.")
+    else:
+        referral_df = load_referral_data(DEFAULT_REFERRAL_PATH)
 
 except Exception as e:
     st.error(f"Could not load referral data: {e}")
@@ -127,7 +128,10 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.caption(f"Loaded from: `{DEFAULT_REFERRAL_PATH}`")
+    if uploaded_workflow == "referrals" and uploaded_frames:
+        st.caption("Loaded from the validated upload batch")
+    else:
+        st.caption(f"Loaded from: {DEFAULT_REFERRAL_PATH}")
 
     if "Source_File" in referral_df.columns:
         st.caption(f"Files loaded: {referral_df['Source_File'].nunique()}")

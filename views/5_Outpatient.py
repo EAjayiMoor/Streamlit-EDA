@@ -37,12 +37,6 @@ from src.transforms.outpatient_transform import (
 from src.utils.specialty_standardisation import standardise_specialty_series
 
 
-st.set_page_config(
-    page_title="Outpatient Flow & Capacity Intelligence",
-    page_icon="🏥",
-    layout="wide",
-)
-
 st.title("🏥 Outpatient Flow & Capacity Intelligence")
 
 st.caption(
@@ -454,7 +448,13 @@ def plot_pathway_volumes(
 # Load outpatient data
 # ---------------------------------------------------------
 try:
-    outpatient_df = load_outpatient_data(DEFAULT_OUTPATIENT_PATH)
+    uploaded_frames = st.session_state.get("eda_frames", [])
+    uploaded_workflow = st.session_state.get("eda_workflow")
+    if uploaded_workflow == "outpatient" and uploaded_frames:
+        outpatient_df = pd.concat(uploaded_frames, ignore_index=True)
+        st.info("Using the validated outpatient batch from the upload workspace.")
+    else:
+        outpatient_df = load_outpatient_data(DEFAULT_OUTPATIENT_PATH)
 
 except Exception as e:
     st.error(f"Could not load outpatient data: {e}")

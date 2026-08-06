@@ -4,7 +4,7 @@ import plotly.express as px
 
 from src.data.rtt_loader import load_all_rtt_files
 from src.transforms.rtt_transform import (
-    filter_pah_incomplete,
+    filter_rtt_incomplete,
     add_wait_band_metrics,
     summarise_rtt_by_month_specialty,
     get_latest_specialty_backlog,
@@ -13,18 +13,12 @@ from src.transforms.rtt_transform import build_specialty_heatmap
 from src.transforms.rtt_transform import summarise_specialty_weekly_wait_band_distribution
 from src.transforms.rtt_transform import summarise_rtt_completions_by_month_specialty
 
-# ---------------------------------------------------------
-# Page config
-# ---------------------------------------------------------
-st.set_page_config(page_title="Specialty View", layout="wide")
-
-st.title("Specialty View")
+st.title("RTT specialty view")
 st.write(
     """
-    This page shows RTT backlog by specialty for Princess Alexandra Hospital (PAH),
-    using incomplete pathways only. It helps identify which specialties contribute
-    most to backlog, how risk is distributed across wait bands, and how backlog
-    is changing over time.
+    This page shows RTT backlog by specialty for the selected organisation,
+    using incomplete pathways only. It helps identify which specialties
+    contribute most to backlog and how risk is distributed across wait bands.
     """
 )
 
@@ -32,8 +26,31 @@ st.write(
 # Load and transform RTT data
 # ---------------------------------------------------------
 try:
-    raw_df = load_all_rtt_files()
-    pah_df = filter_pah_incomplete(raw_df)
+    uploaded_frames = st.session_state.get("eda_frames", [])
+    uploaded_workflow = st.session_state.get("eda_workflow")
+    if uploaded_workflow == "rtt" and uploaded_frames:
+        raw_df = pd.concat(uploaded_frames, ignore_index=True)
+        st.info("Using the validated RTT batch from the upload workspace.")
+    else:
+        raw_df = load_all_rtt_files()
+
+    provider_options = sorted(
+        raw_df["Provider Org Name"].dropna().astype(str).str.strip().unique()
+    )
+    default_provider = next(
+        (
+            provider
+            for provider in provider_options
+            if "PRINCESS ALEXANDRA" in provider.upper()
+        ),
+        provider_options[0],
+    )
+    selected_provider = st.sidebar.selectbox(
+        "Organisation",
+        provider_options,
+        index=provider_options.index(default_provider),
+    )
+    pah_df = filter_rtt_incomplete(raw_df, selected_provider)
     metric_df = add_wait_band_metrics(pah_df)
 
     specialty_df = summarise_rtt_by_month_specialty(metric_df)

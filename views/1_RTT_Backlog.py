@@ -1,11 +1,14 @@
 import streamlit as st
 import plotly.express as px
+import pandas as pd
 
 from src.data.rtt_loader import load_all_rtt_files
 from src.transforms.rtt_transform import (
     add_wait_band_metrics,
     filter_pah_admitted_backlog,
     filter_pah_incomplete,
+    filter_rtt_admitted_backlog,
+    filter_rtt_incomplete,
     summarise_admitted_backlog_by_month,
     summarise_admitted_backlog_by_month_specialty,
     summarise_rtt_by_month,
@@ -27,14 +30,12 @@ SURGICAL_ADMITTED_BACKLOG_SPECIALTIES = [
 # ---------------------------------------------------------
 # Page config
 # ---------------------------------------------------------
-st.set_page_config(page_title="RTT Backlog", layout="wide")
-
 st.title("RTT Backlog")
 st.write(
     """
-    This view shows the active RTT waiting list for Princess Alexandra Hospital (PAH),
-    based on incomplete pathways. It tracks backlog size, performance against the
-    18-week standard, and backlog severity through 52+ week waits.
+    This view shows the active RTT waiting list for the selected organisation,
+    based on incomplete pathways. It tracks backlog size, performance against
+    the 18-week standard, and backlog severity through 52+ week waits.
     """
 )
 
@@ -47,9 +48,30 @@ st.write(
 # - derive 0-18 and 52+ wait-band metrics
 # - summarise to one row per month for trend analysis
 try:
-    raw_df = load_all_rtt_files()
-    pah_df = filter_pah_incomplete(raw_df)
-    admitted_df = filter_pah_admitted_backlog(raw_df)
+    uploaded_frames = st.session_state.get("eda_frames", [])
+    uploaded_workflow = st.session_state.get("eda_workflow")
+    if uploaded_workflow == "rtt" and uploaded_frames:
+        raw_df = pd.concat(uploaded_frames, ignore_index=True)
+        st.info("Using the validated RTT batch from the upload workspace.")
+    else:
+        raw_df = load_all_rtt_files()
+
+    provider_options = []
+    if "Provider Org Name" in raw_df.columns:
+        provider_options = sorted(
+            raw_df["Provider Org Name"].dropna().astype(str).str.strip().unique()
+        )
+    if not provider_options:
+        raise ValueError("No provider organisations were found in the RTT data.")
+
+    selected_provider = st.sidebar.selectbox(
+        "Organisation",
+        provider_options,
+        index=0,
+        help="Select the hospital or provider to analyse.",
+    )
+    pah_df = filter_rtt_incomplete(raw_df, selected_provider)
+    admitted_df = filter_rtt_admitted_backlog(raw_df, selected_provider)
     metric_df = add_wait_band_metrics(pah_df)
     admitted_metric_df = add_wait_band_metrics(admitted_df)
     summary_df = summarise_rtt_by_month(metric_df)

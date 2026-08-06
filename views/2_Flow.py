@@ -9,14 +9,12 @@ from src.transforms.rtt_transform import (
     build_rtt_flow_summary,
 )
 
-st.set_page_config(page_title="Flow", layout="wide")
-
 st.title("Flow")
 st.write(
     """
-    This page focuses on the drivers of waiting list movement by comparing demand entering
-    the system with patients being completed. It shows whether monthly flow is adding to
-    or relieving pressure on the backlog.
+    This page compares RTT demand entering the system with patients being
+    completed. It shows whether monthly flow is adding to or relieving pressure
+    on the selected organisation's backlog.
     """
 )
 
@@ -24,7 +22,22 @@ st.write(
 # Load and transform flow data
 # ---------------------------------------------------------
 try:
-    raw_df = load_all_rtt_files()
+    uploaded_frames = st.session_state.get("eda_frames", [])
+    uploaded_workflow = st.session_state.get("eda_workflow")
+    if uploaded_workflow == "rtt" and uploaded_frames:
+        raw_df = pd.concat(uploaded_frames, ignore_index=True)
+        st.info("Using the validated RTT batch from the upload workspace.")
+    else:
+        raw_df = load_all_rtt_files()
+
+    if "Provider Org Name" in raw_df.columns:
+        provider_options = sorted(
+            raw_df["Provider Org Name"].dropna().astype(str).str.strip().unique()
+        )
+        selected_provider = st.sidebar.selectbox("Organisation", provider_options)
+        raw_df = raw_df[
+            raw_df["Provider Org Name"].astype(str).str.strip() == selected_provider
+        ].copy()
 
     demand_df = summarise_rtt_additions_by_month(raw_df)
     completion_df = summarise_rtt_completions_by_month(raw_df)

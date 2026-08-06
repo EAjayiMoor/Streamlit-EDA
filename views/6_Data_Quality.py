@@ -6,12 +6,6 @@ from pathlib import Path
 from src.data.rtt_loader import load_all_rtt_files
 
 
-st.set_page_config(
-    page_title="Data Quality & Investigation",
-    page_icon="🔎",
-    layout="wide",
-)
-
 st.title("🔎 Data Quality & Investigation")
 
 st.caption(
@@ -251,10 +245,20 @@ def category_summary(df: pd.DataFrame, field: str) -> pd.DataFrame:
 
 loaded_data = {}
 profiles = []
+uploaded_frames = st.session_state.get("eda_frames", [])
+uploaded_workflow = st.session_state.get("eda_workflow")
 
 for dataset_name, config in DATASET_CONFIG.items():
     try:
-        df = load_raw_folder(config["path"])
+        workflow_key = {
+            "Referrals": "referrals",
+            "Outpatients": "outpatient",
+        }.get(dataset_name)
+        if workflow_key == uploaded_workflow and uploaded_frames:
+            df = pd.concat(uploaded_frames, ignore_index=True)
+            st.info(f"Using the validated {dataset_name.lower()} batch from the upload workspace.")
+        else:
+            df = load_raw_folder(config["path"])
         df = clean_dates(df, config["date_col"])
         loaded_data[dataset_name] = df
 
@@ -287,7 +291,11 @@ for dataset_name, config in DATASET_CONFIG.items():
 
 
 try:
-    rtt_df = load_all_rtt_files()
+    if uploaded_workflow == "rtt" and uploaded_frames:
+        rtt_df = pd.concat(uploaded_frames, ignore_index=True)
+        st.info("Using the validated RTT batch from the upload workspace.")
+    else:
+        rtt_df = load_all_rtt_files()
     rtt_df.columns = rtt_df.columns.str.strip()
     loaded_data["RTT"] = rtt_df
 

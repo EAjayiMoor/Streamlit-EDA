@@ -1,6 +1,45 @@
 import pandas as pd
 
 
+DEFAULT_PAH_PROVIDER_CODE = "RQW"
+DEFAULT_PAH_PROVIDER_NAME = "THE PRINCESS ALEXANDRA HOSPITAL NHS TRUST"
+
+
+def _filter_provider(df: pd.DataFrame, organisation: str | None = None) -> pd.DataFrame:
+    filtered = df.copy()
+    if not organisation:
+        return filtered
+
+    if "Provider Org Code" in filtered.columns:
+        code_match = (
+            filtered["Provider Org Code"].astype(str).str.strip().str.upper()
+            == organisation.strip().upper()
+        )
+        if code_match.any():
+            return filtered[code_match].copy()
+
+    if "Provider Org Name" in filtered.columns:
+        name_match = (
+            filtered["Provider Org Name"].astype(str).str.strip().str.upper()
+            == organisation.strip().upper()
+        )
+        if name_match.any():
+            return filtered[name_match].copy()
+
+    raise ValueError(f"Organisation not found in RTT data: {organisation}")
+
+
+def filter_rtt_incomplete(
+    df: pd.DataFrame,
+    organisation: str | None = None,
+) -> pd.DataFrame:
+    """Filter RTT data to one organisation's incomplete pathways."""
+    filtered = _filter_provider(df, organisation)
+    return filtered[
+        filtered["RTT Part Description"] == "Incomplete Pathways"
+    ].copy()
+
+
 def filter_pah_incomplete(df: pd.DataFrame) -> pd.DataFrame:
     """
     Filter RTT data to Princess Alexandra Hospital (PAH) and incomplete pathways only.
@@ -10,17 +49,18 @@ def filter_pah_incomplete(df: pd.DataFrame) -> pd.DataFrame:
     - Incomplete pathways represent the active waiting list
     - This gives the current backlog position rather than completed activity
     """
-    filtered = df.copy()
+    return filter_rtt_incomplete(df, DEFAULT_PAH_PROVIDER_NAME)
 
-    filtered = filtered[
-        filtered["Provider Org Name"] == "THE PRINCESS ALEXANDRA HOSPITAL NHS TRUST"
-    ]
 
-    filtered = filtered[
-        filtered["RTT Part Description"] == "Incomplete Pathways"
-    ]
-
-    return filtered
+def filter_rtt_admitted_backlog(
+    df: pd.DataFrame,
+    organisation: str | None = None,
+) -> pd.DataFrame:
+    """Filter RTT data to one organisation's admitted backlog."""
+    filtered = _filter_provider(df, organisation)
+    return filtered[
+        filtered["RTT Part Description"] == "Incomplete Pathways with DTA"
+    ].copy()
 
 
 def filter_pah_admitted_backlog(df: pd.DataFrame) -> pd.DataFrame:
@@ -32,17 +72,7 @@ def filter_pah_admitted_backlog(df: pd.DataFrame) -> pd.DataFrame:
       'Incomplete Pathways with DTA'
     - This should be treated as a subset of the wider incomplete pathway backlog
     """
-    filtered = df.copy()
-
-    filtered = filtered[
-        filtered["Provider Org Name"] == "THE PRINCESS ALEXANDRA HOSPITAL NHS TRUST"
-    ]
-
-    filtered = filtered[
-        filtered["RTT Part Description"] == "Incomplete Pathways with DTA"
-    ]
-
-    return filtered
+    return filter_rtt_admitted_backlog(df, DEFAULT_PAH_PROVIDER_NAME)
 
 
 

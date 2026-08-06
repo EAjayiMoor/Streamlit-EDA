@@ -1,10 +1,5 @@
 import os
 import requests
-from dotenv import load_dotenv
-
-load_dotenv(dotenv_path=".env")
-
-print("DEBUG KEY:", repr(os.environ.get("OPENAI_API_KEY")))
 
 
 OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses"

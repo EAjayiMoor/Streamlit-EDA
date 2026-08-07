@@ -39,10 +39,41 @@ def inject_moorhouse_theme() -> None:
         [data-testid="stSidebar"] {
             background: var(--mh-surface-muted);
             border-right: 1px solid var(--mh-border);
+            min-width: 280px;
+            max-width: 320px;
+        }
+
+        [data-testid="stSidebar"] > div:first-child {
+            width: 280px;
         }
 
         [data-testid="stSidebar"] * {
             font-family: inherit;
+        }
+
+        [data-testid="stSidebarNav"] {
+            padding: 12px 8px;
+        }
+
+        [data-testid="stSidebarNav"] a,
+        [data-testid="stSidebarNav"] button {
+            min-height: 40px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            line-height: 1.35;
+            white-space: normal;
+        }
+
+        [data-testid="stSidebarNav"] a p,
+        [data-testid="stSidebarNav"] button p {
+            line-height: 1.35;
+            white-space: normal;
+        }
+
+        [data-testid="stSidebarNav"] a[aria-current="page"] {
+            background: rgba(60, 16, 83, 0.08);
+            color: var(--mh-brand);
+            font-weight: 600;
         }
 
         [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {

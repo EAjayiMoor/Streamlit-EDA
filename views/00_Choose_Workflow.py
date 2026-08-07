@@ -9,7 +9,10 @@ st.markdown(
         color: #00ab8e; font-size: 1rem; font-weight: 600;
         letter-spacing: 0.12em; text-transform: uppercase;
     }
-    .mh-lead { font-size: 1.1rem; line-height: 1.55; max-width: 72ch; }
+    .mh-lead {
+        font-size: 1.1rem; line-height: 1.55; max-width: none;
+        white-space: nowrap;
+    }
     .mh-card {
         background: #ffffff; border: 1px solid rgba(60,16,83,.12);
         border-radius: 8px; padding: 24px; height: 190px;
@@ -18,6 +21,9 @@ st.markdown(
     .mh-card h3 { margin: 8px 0 6px; font-size: 1.2rem; }
     .mh-card p { color: #71717a; font-size: 1rem; line-height: 1.45; }
     .mh-card p:last-child { margin-top: auto; }
+    @media (max-width: 900px) {
+        .mh-lead { white-space: normal; }
+    }
     </style>
     """,
     unsafe_allow_html=True,

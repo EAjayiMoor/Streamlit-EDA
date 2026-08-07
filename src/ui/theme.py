@@ -41,40 +41,8 @@ def inject_moorhouse_theme() -> None:
             border-right: 1px solid var(--mh-border);
         }
 
-        .mh-sidebar-brand {
-            border-bottom: 1px solid var(--mh-border);
-            margin: 0 0 16px;
-            padding: 8px 8px 16px;
-        }
-
-        .mh-sidebar-eyebrow {
-            color: var(--mh-accent);
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-        }
-
-        .mh-sidebar-title {
-            color: var(--mh-brand);
-            font-size: 1.05rem;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
         [data-testid="stSidebar"] * {
             font-family: inherit;
-        }
-
-        [data-testid="stSidebar"] [data-testid="stNavigation"] {
-            padding-top: 0;
-        }
-
-        [data-testid="stSidebar"] [data-testid="stNavSectionHeader"] {
-            color: var(--mh-text-muted);
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
         }
 
         [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {

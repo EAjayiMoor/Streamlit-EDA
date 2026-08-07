@@ -1,11 +1,14 @@
 import streamlit as st
 
+from src.ui.theme import inject_moorhouse_theme
+
 
 st.set_page_config(
     page_title="Moorhouse EDA Workbench",
     page_icon="◆",
     layout="wide",
 )
+inject_moorhouse_theme()
 
 
 def build_navigation() -> None:

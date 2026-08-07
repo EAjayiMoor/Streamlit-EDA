@@ -23,7 +23,7 @@ from src.transforms.referral_transform import (
 )
 
 
-st.title("📨 Referral & Demand Intelligence")
+st.title("Referral and demand intelligence")
 
 st.caption(
     "Upstream referral demand intelligence showing where future RTT pressure may be emerging."

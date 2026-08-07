@@ -6,7 +6,7 @@ from pathlib import Path
 from src.data.rtt_loader import load_all_rtt_files
 
 
-st.title("🔎 Data Quality & Investigation")
+st.title("Data quality and investigation")
 
 st.caption(
     "Assurance and investigation view for checking completeness, duplicates, date coverage and category quality across RTT, referrals and outpatients."

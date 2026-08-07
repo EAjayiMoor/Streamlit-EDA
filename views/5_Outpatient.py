@@ -37,7 +37,7 @@ from src.transforms.outpatient_transform import (
 from src.utils.specialty_standardisation import standardise_specialty_series
 
 
-st.title("🏥 Outpatient Flow & Capacity Intelligence")
+st.title("Outpatient flow and capacity intelligence")
 
 st.caption(
     "Outpatient activity intelligence showing how patients move through the middle layer of the elective pathway."

@@ -2,20 +2,16 @@ import streamlit as st
 
 from src.workflows.config import WORKFLOWS
 
-
 st.markdown(
     """
     <style>
-    :root { --mh-brand: #3c1053; --mh-accent: #00ab8e; --mh-bg: #fbfafb; }
-    .stApp { background: var(--mh-bg); }
-    h1, h2, h3 { color: var(--mh-brand); letter-spacing: -0.01em; }
     .mh-eyebrow {
-        color: var(--mh-accent); font-size: 0.8rem; font-weight: 600;
+        color: #00ab8e; font-size: 0.8rem; font-weight: 600;
         letter-spacing: 0.12em; text-transform: uppercase;
     }
     .mh-lead { font-size: 1.1rem; line-height: 1.55; max-width: 72ch; }
     .mh-card {
-        background: white; border: 1px solid rgba(60,16,83,.12);
+        background: #ffffff; border: 1px solid rgba(60,16,83,.12);
         border-radius: 8px; padding: 24px; height: 190px;
         box-sizing: border-box; display: flex; flex-direction: column;
     }

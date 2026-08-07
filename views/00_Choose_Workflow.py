@@ -6,7 +6,7 @@ st.markdown(
     """
     <style>
     .mh-eyebrow {
-        color: #00ab8e; font-size: 0.8rem; font-weight: 600;
+        color: #00ab8e; font-size: 1rem; font-weight: 600;
         letter-spacing: 0.12em; text-transform: uppercase;
     }
     .mh-lead { font-size: 1.1rem; line-height: 1.55; max-width: 72ch; }

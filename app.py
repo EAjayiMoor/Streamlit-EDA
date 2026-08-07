@@ -16,16 +16,14 @@ def build_navigation() -> None:
     has_uploaded_batch = bool(st.session_state.get("eda_frames"))
 
     navigation_pages = [
-        st.Page(
-            "views/00_Choose_Workflow.py",
-            title="Choose workflow",
-            icon=":material/home:",
-        ),
-        st.Page(
-            "views/0_Upload_Data.py",
-            title="Upload and validate",
-            icon=":material/upload_file:",
-        ),
+            st.Page(
+                "views/00_Choose_Workflow.py",
+                title="Choose workflow",
+            ),
+            st.Page(
+                "views/0_Upload_Data.py",
+                title="Upload and validate",
+            ),
     ]
 
     if selected_workflow and has_uploaded_batch:

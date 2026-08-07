@@ -15,18 +15,30 @@ def build_navigation() -> None:
     selected_workflow = st.session_state.get("selected_workflow")
     has_uploaded_batch = bool(st.session_state.get("eda_frames"))
 
-    navigation_pages = [
-        st.Page(
-            "views/00_Choose_Workflow.py",
-            title="Choose workflow",
-            icon=":material/home:",
-        ),
-        st.Page(
-            "views/0_Upload_Data.py",
-            title="Upload and validate",
-            icon=":material/upload_file:",
-        ),
-    ]
+    st.sidebar.markdown(
+        """
+        <div class="mh-sidebar-brand">
+            <div class="mh-sidebar-eyebrow">MOORHOUSE</div>
+            <div class="mh-sidebar-title">EDA workbench</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    navigation_sections = {
+        "Start": [
+            st.Page(
+                "views/00_Choose_Workflow.py",
+                title="Choose workflow",
+                icon=":material/home:",
+            ),
+            st.Page(
+                "views/0_Upload_Data.py",
+                title="Upload and validate",
+                icon=":material/upload_file:",
+            ),
+        ]
+    }
 
     if selected_workflow and has_uploaded_batch:
         workflow_pages = {
@@ -49,9 +61,17 @@ def build_navigation() -> None:
                 st.Page("views/6_Data_Quality.py", title="Data quality"),
             ],
         }
-        navigation_pages.extend(workflow_pages.get(selected_workflow, []))
+        selected_pages = workflow_pages.get(selected_workflow, [])
+        if selected_pages:
+            workflow_label = {
+                "rtt": "RTT analysis",
+                "referrals": "Referral analysis",
+                "outpatient": "Outpatient analysis",
+                "inpatient": "Inpatient analysis",
+            }.get(selected_workflow, "Analysis")
+            navigation_sections[workflow_label] = selected_pages
 
-    st.navigation(navigation_pages).run()
+    st.navigation(navigation_sections, position="sidebar").run()
 
 
 build_navigation()

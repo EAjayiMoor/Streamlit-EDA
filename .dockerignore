@@ -1,0 +1,15 @@
+.git
+.gitignore
+.dockerignore
+.env
+.env.*
+__pycache__
+*.py[cod]
+*.xlsx
+*.xls
+data/raw
+archive
+outputs
+.DS_Store
+~$*
+.streamlit

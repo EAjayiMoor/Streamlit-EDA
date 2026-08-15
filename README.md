@@ -70,6 +70,24 @@ Then open [http://localhost:8501](http://localhost:8501).
 The main dependencies are Streamlit, pandas, Plotly, requests, and the
 standard pandas data-processing libraries available in the project environment.
 
+## Run with Docker
+
+Build and start the application with Docker Compose:
+
+~~~bash
+docker compose up --build
+~~~
+
+Then open [http://localhost:8501](http://localhost:8501). The container
+exposes Streamlit's health endpoint and runs as a non-root user. Uploaded files
+are held in the active Streamlit session and are not copied into the image.
+
+To stop the container:
+
+~~~bash
+docker compose down
+~~~
+
 ## Project structure
 
 ~~~text

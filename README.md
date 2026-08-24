@@ -14,10 +14,10 @@ through the same workflow.
 
 These workflows are intended for historical NHS England CSV extracts:
 
-- RTT — waiting-list, backlog, flow, and pathway analysis
-- Referrals — demand, source, priority, geography, and specialty analysis
-- Outpatient activity — activity, clinic, contact type, and pathway analysis
-- Inpatient activity — admissions, specialty mix, heatmaps, and length of stay
+- RTT â€” waiting-list, backlog, flow, and pathway analysis
+- Referrals â€” demand, source, priority, geography, and specialty analysis
+- Outpatient activity â€” activity, clinic, contact type, and pathway analysis
+- Inpatient activity â€” admissions, specialty mix, heatmaps, and length of stay
 
 ### Organisation-provided workflows
 
@@ -121,6 +121,11 @@ The interface follows the Moorhouse UI Standard:
 - Keep organisation, period, source file, and validation status visible when
   working with an uploaded batch.
 
+## Deployment
+
+For Azure App Service + ACR deployment steps, see:
+
+- [Deployment guide](DEPLOY.md)
 ## Product planning
 
 See:
@@ -128,4 +133,5 @@ See:
 - [Product brief](docs/PRODUCT.md)
 - [Sprint plan](docs/SPRINT_PLAN.md)
 - [Agent guidance](AGENTS.md)
+
 
